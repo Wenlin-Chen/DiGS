@@ -20,22 +20,18 @@ def attempt_swap(chain_a, chain_b, inv_temp_a, inv_temp_b, target_density_and_gr
     return new_chain_a, new_chain_b
 
 
-def parallel_tempering_step(x, num_chains, energy_func, step_size, num_leapfrog_steps_per_hmc_step, num_hmc_steps, inv_temperatures, device="cpu"):
-    chains = [None for _ in range(num_chains)]
-    hmcs = [None for _ in range(num_chains)]
-
-    for i in range(num_chains):
-        hmcs[i] = HamiltonianMonteCarlo(x[i], energy_func, step_size, num_leapfrog_steps_per_hmc_step, inv_temperatures[i], device)
+def parallel_tempering_step(x, num_temperatures, energy_func, step_size, num_leapfrog_steps_per_hmc_step, num_hmc_steps, inv_temperatures, device="cpu"):
 
     for j in range(num_hmc_steps):
-
+        
         # Update each chain with HMC
-        for i in range(num_chains):
-            chains[i] = hmcs[i].sample()
+        for i in range(num_temperatures):
+            hmc = HamiltonianMonteCarlo(x[i], energy_func, step_size, num_leapfrog_steps_per_hmc_step, inv_temperatures[i], device)
+            x[i] = hmc.sample()
             
-        # if (j + 1) < num_hmc_steps:
-        # Attempt swaps between adjacent chains
-        for i in range(num_chains - 1):
-            chains[i], chains[i + 1] = attempt_swap(chains[i], chains[i + 1], inv_temperatures[i], inv_temperatures[i + 1], hmcs[i].target_density_and_grad_fn, device)
+        if (j + 1) < num_hmc_steps:
+            # Attempt swaps between adjacent chains
+            for i in range(num_temperatures - 1):
+                x[i], x[i + 1] = attempt_swap(x[i], x[i + 1], inv_temperatures[i], inv_temperatures[i + 1], hmc.target_density_and_grad_fn, device)
 
-    return chains
+    return x
