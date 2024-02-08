@@ -53,10 +53,10 @@ class HamiltonianMonteCarlo(object):
 
         # Final update of position and half step for momentum
         x += self.step_size * p
-        _, grad = self.target_density_and_grad_fn(x, self.inv_temperature)
-        p += 0.5 * self.step_size * grad
+        new_log_prob, new_grad = self.target_density_and_grad_fn(x, self.inv_temperature)
+        p += 0.5 * self.step_size * new_grad
 
-        return x, p
+        return x, p, new_log_prob, new_grad
 
 
     def sample(self):
@@ -68,23 +68,22 @@ class HamiltonianMonteCarlo(object):
         p = torch.randn_like(self.x, device=self.device)
 
         # Simulate Hamiltonian dynamics
-        new_x, new_p = self.leapfrog_integration(p)
-
-        # Compute new log probability and gradient
-        new_log_prob, new_grad = self.target_density_and_grad_fn(new_x, self.inv_temperature)
+        new_x, new_p, new_log_prob, new_grad = self.leapfrog_integration(p)
 
         # Hamiltonian (log probability + kinetic energy)
         current_hamiltonian = self.current_log_prob - 0.5 * p.pow(2).sum(-1)
         new_hamiltonian = new_log_prob - 0.5 * new_p.pow(2).sum(-1)
         
-        log_acceptance_ratio = current_hamiltonian - new_hamiltonian
-        is_accept = torch.rand_like(log_acceptance_ratio, device=self.device).log() < log_acceptance_ratio
+        log_accept_rate = current_hamiltonian - new_hamiltonian
+        is_accept = torch.rand_like(log_accept_rate, device=self.device).log() < log_accept_rate
         is_accept = is_accept.unsqueeze(-1)
 
         self.x = torch.where(is_accept, new_x.detach(), self.x)
         self.current_grad = torch.where(is_accept, new_grad.detach(), self.current_grad)
         self.current_log_prob = torch.where(is_accept.squeeze(-1), new_log_prob.detach(), self.current_log_prob)
+
+        acc_rate = torch.minimum(torch.ones_like(log_accept_rate), log_accept_rate.exp()).mean()
         
-        return copy.deepcopy(self.x.detach())
+        return copy.deepcopy(self.x.detach()), acc_rate.item()
 
     

@@ -63,5 +63,7 @@ class LangevinDynamics(object):
             self.x = torch.where(is_accept, x_p.detach(), self.x)
             self.f_x = torch.where(is_accept.squeeze(-1), f_xp.detach(), self.f_x)
             self.grad_x = torch.where(is_accept, grad_xp.detach(), self.grad_x)  
+
+            acc_rate = torch.minimum(torch.ones_like(log_accept_rate), log_accept_rate.exp()).mean()
             
-            return copy.deepcopy(self.x.detach()), self.f_x.detach()
+            return copy.deepcopy(self.x.detach()), acc_rate.item()

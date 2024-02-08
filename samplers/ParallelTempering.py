@@ -27,7 +27,7 @@ def parallel_tempering_step(x, num_temperatures, energy_func, step_size, num_lea
         # Update each chain with HMC
         for i in range(num_temperatures):
             hmc = HamiltonianMonteCarlo(x[i], energy_func, step_size, num_leapfrog_steps_per_hmc_step, inv_temperatures[i], device)
-            x[i] = hmc.sample()
+            x[i], _ = hmc.sample()
             
         if (j + 1) < num_hmc_steps:
             # Attempt swaps between adjacent chains
