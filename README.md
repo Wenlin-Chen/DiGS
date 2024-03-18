@@ -6,7 +6,7 @@
 
 </div>
 
-This is the official PyTorch implementation of `Diffusive Gibbs Sampler (DiGS)`, proposed in the paper _Diffusive Gibbs Sampling_. Please read our paper [[arXiv](https://arxiv.org/abs/2402.03008)] for detailed descriptions of the proposed ADKF-IFT method. 
+This is the official PyTorch implementation of `Diffusive Gibbs Sampler (DiGS)`, proposed in the paper _Diffusive Gibbs Sampling_. Please read our paper [[arXiv](https://arxiv.org/abs/2402.03008)] for detailed descriptions of the proposed DiGS method. 
 
 If you find our paper, code, and/or raw result data useful for your research, please consider citing our paper:
 
