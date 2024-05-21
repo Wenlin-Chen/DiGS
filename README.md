@@ -6,15 +6,16 @@
 
 </div>
 
-This is the official PyTorch implementation of `Diffusive Gibbs Sampler (DiGS)`, proposed in the paper _Diffusive Gibbs Sampling_. Please read our paper [[arXiv](https://arxiv.org/abs/2402.03008)] for detailed descriptions of the proposed DiGS method. 
+This is the official PyTorch implementation of `Diffusive Gibbs Sampler (DiGS)`, proposed in the paper _Diffusive Gibbs Sampling_ (published at ICML 2024). Please read our paper [[arXiv](https://arxiv.org/abs/2402.03008)] for detailed descriptions of the proposed DiGS method. 
 
 If you find our paper, code, and/or raw result data useful for your research, please consider citing our paper:
 
 ```
-@article{chen2024diffusive,
+@inproceedings{chen2024diffusive,
   title={Diffusive Gibbs Sampling},
   author={Chen, Wenlin and Zhang, Mingtian and Paige, Brooks and Hern{\'a}ndez-Lobato, Jos{\'e} Miguel and Barber, David},
-  journal={arXiv preprint arXiv:2402.03008},
-  year={2024}
+  booktitle={International Conference on Machine Learning},
+  year={2024},
+  organization={PMLR}
 }
 ```
