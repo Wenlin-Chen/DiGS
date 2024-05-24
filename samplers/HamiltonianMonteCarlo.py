@@ -39,8 +39,8 @@ class HamiltonianMonteCarlo(object):
         """
         Leapfrog integration for simulating Hamiltonian dynamics.
         """
-        x = self.x.detach()
-        p = p.detach()
+        x = self.x.detach().clone()
+        p = p.detach().clone()
 
         # Half step for momentum
         p += 0.5 * self.step_size * self.current_grad
