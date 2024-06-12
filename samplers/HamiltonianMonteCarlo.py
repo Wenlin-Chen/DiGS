@@ -74,7 +74,7 @@ class HamiltonianMonteCarlo(object):
         current_hamiltonian = self.current_log_prob - 0.5 * p.pow(2).sum(-1)
         new_hamiltonian = new_log_prob - 0.5 * new_p.pow(2).sum(-1)
         
-        log_accept_rate = current_hamiltonian - new_hamiltonian
+        log_accept_rate = - current_hamiltonian + new_hamiltonian
         is_accept = torch.rand_like(log_accept_rate, device=self.device).log() < log_accept_rate
         is_accept = is_accept.unsqueeze(-1)
 
